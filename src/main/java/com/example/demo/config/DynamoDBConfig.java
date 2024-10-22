@@ -12,12 +12,22 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class DynamoDBConfig {
 
-    @Bean
-    public DynamoDBMapper mapper() {
-        return new DynamoDBMapper(dynamoDBMapper());
+    @Bean(name = "merchandiseDynamoDB")
+    public DynamoDBMapper merchandiseClient() {
+        return new DynamoDBMapper(merchandiseDynamoDBMapper());
     }
 
-    private AmazonDynamoDB dynamoDBMapper() {
+    @Bean(name = "inventoryDynamoDB")
+    public DynamoDBMapper inventoryClient() {
+        return new DynamoDBMapper(inventoryDynamoDBMapper());
+    }
+
+    private AmazonDynamoDB merchandiseDynamoDBMapper() {
+        AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard().withEndpointConfiguration((new AwsClientBuilder.EndpointConfiguration("http://localhost:8000", "claude"))).withCredentials((new AWSStaticCredentialsProvider(new BasicAWSCredentials("claude", "claude")))).build();
+        return client;
+    }
+
+    private AmazonDynamoDB inventoryDynamoDBMapper() {
         AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard().withEndpointConfiguration((new AwsClientBuilder.EndpointConfiguration("http://localhost:8000", "claude"))).withCredentials((new AWSStaticCredentialsProvider(new BasicAWSCredentials("claude", "claude")))).build();
         return client;
     }

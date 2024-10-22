@@ -30,11 +30,11 @@ public class Merchandise {
         this.description = requestBody.getDescription();
     }
 
-    public Merchandise(String sku, UpdateMerchandiseRequestBody requestBody) {
-        this.sku = requestBody.getSku();
-        this.name = requestBody.getName();
-        this.count = requestBody.getCount();
-        this.description = requestBody.getDescription();
+    public Merchandise(String sku, UpdateMerchandiseRequestBody requestBody, Merchandise currentMerchandise) {
+        this.sku = currentMerchandise.getSku();
+        this.name = requestBody.getName() != null ? requestBody.getName() : currentMerchandise.getName();
+        this.count = requestBody.getCount() != null ? requestBody.getCount() : currentMerchandise.getCount();
+        this.description = requestBody.getDescription() != null ? requestBody.getDescription() : currentMerchandise.getDescription();
     }
 
     public String getSku() {
