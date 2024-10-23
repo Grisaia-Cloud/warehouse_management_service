@@ -4,8 +4,12 @@ import com.amazonaws.AmazonClientException;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBQueryExpression;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
+import com.amazonaws.services.dynamodbv2.model.PutItemRequest;
+import com.amazonaws.services.dynamodbv2.model.PutRequest;
+import com.amazonaws.services.dynamodbv2.model.WriteRequest;
 import com.example.demo.constants.RepositoryConstants;
 import com.example.demo.model.Inventory;
+import com.example.demo.requestBodyModel.NewInventoryRequestBody;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -46,6 +50,20 @@ public class InventoryRepository {
             logger.error(RepositoryConstants.INVENTORY_GET_ALL_FAIL_MESSAGE);
             throw new RuntimeException();
         }
+    }
+
+    public void addToInventory(List<NewInventoryRequestBody> items) {
+//        try {
+//            List<WriteRequest> writeRequests = new ArrayList<>();
+//            for (NewInventoryRequestBody item: items) {
+//                Inventory model = new Inventory(item);
+//                WriteRequest writeRequest = new WriteRequest()
+//                        .withPutRequest(new PutRequest()
+//
+//
+//                        )
+//            }
+//        }
     }
 
     // combination sort key: china:Apple:100:unused

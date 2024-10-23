@@ -7,6 +7,7 @@ import com.example.demo.model.Inventory;
 import com.example.demo.model.Merchandise;
 import com.example.demo.repository.InventoryRepository;
 import com.example.demo.repository.MerchandiseRepository;
+import com.example.demo.requestBodyModel.NewInventoryRequestBody;
 import com.example.demo.requestBodyModel.NewMerchandiseRequestBody;
 import com.example.demo.requestBodyModel.UpdateMerchandiseRequestBody;
 import org.slf4j.Logger;
@@ -78,5 +79,10 @@ public class WarehouseService implements IWarehouseService {
             inventoryDtoArrayList.add(new InventoryDto(inventory));
         }
         return inventoryDtoArrayList;
+    }
+
+    @Override
+    public void addToInventory(List<NewInventoryRequestBody> newInventoryRequestBodyList) {
+
     }
 }

@@ -1,10 +1,13 @@
 package com.example.demo.controller;
 
 import com.example.demo.constants.ControllerConstants;
+import com.example.demo.requestBodyModel.NewInventoryRequestBody;
 import com.example.demo.service.IWarehouseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/warehouse")
@@ -23,6 +26,7 @@ public class InventoryControllers {
             @RequestParam(value = "brand") String brand, @RequestParam(value = "value") Integer value,
             @RequestParam(value = "status") String status, @RequestParam(value = "code") String code,
             @RequestParam(value = "order_number") String order_number) {
+        // TODO: add validation
         try {
             return ResponseEntity.ok(warehouseService.getFromInventory(type, region, brand, value, status, code, order_number));
         } catch (Exception e) {
@@ -31,7 +35,7 @@ public class InventoryControllers {
     }
 
     @PostMapping("/inventory")
-    public ResponseEntity<Object> addToInventory(@RequestBody(required = true) List<newInventoryRequestBody> requestBodyList) {
+    public ResponseEntity<Object> addToInventory(@RequestBody(required = true) List<NewInventoryRequestBody> requestBodyList) {
 
     }
 

@@ -1,12 +1,12 @@
 package com.example.demo.model;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.*;
+import com.example.demo.requestBodyModel.NewInventoryRequestBody;
 
 import java.util.Map;
 
 // Type | Region | Brand | Value | Status | Code | Order#
 // combination sort key: china:Apple:100:unused:code
-
 @DynamoDBDocument
 @DynamoDBTable(tableName = "inventory")
 public class Inventory {
@@ -35,6 +35,17 @@ public class Inventory {
     @DynamoDBAttribute(attributeName = "order_number")
     private String order_number;
 
+    public Inventory(){};
+
+    public Inventory(NewInventoryRequestBody requestBody) {
+        this.type = requestBody.getType().toString();
+        this.region = requestBody.getRegion().toString();
+        this.brand = requestBody.getRegion().toString();
+        this.value = requestBody.getValue();
+        this.status = requestBody.getStatus().toString();
+        this.code = requestBody.getCode();
+        this.order_number = requestBody.getOrder_number();
+    }
     public String getType() {
         return type;
     }
