@@ -1,12 +1,5 @@
 package com.example.demo.repository;
 
-import com.amazonaws.AmazonClientException;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBQueryExpression;
-import com.amazonaws.services.dynamodbv2.model.AttributeValue;
-import com.amazonaws.services.dynamodbv2.model.PutItemRequest;
-import com.amazonaws.services.dynamodbv2.model.PutRequest;
-import com.amazonaws.services.dynamodbv2.model.WriteRequest;
 import com.example.demo.constants.RepositoryConstants;
 import com.example.demo.model.Inventory;
 import com.example.demo.requestBodyModel.NewInventoryRequestBody;
@@ -14,41 +7,61 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
+import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
+import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable;
+import software.amazon.awssdk.enhanced.dynamodb.Expression;
+import software.amazon.awssdk.enhanced.dynamodb.Key;
+import software.amazon.awssdk.enhanced.dynamodb.model.PageIterable;
+import software.amazon.awssdk.enhanced.dynamodb.model.QueryConditional;
+import software.amazon.awssdk.enhanced.dynamodb.model.QueryEnhancedRequest;
+import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import static com.example.demo.config.DynamoDBConfig.INVENTORY_TABLE_SCHEMA;
 
 @Repository
 public class InventoryRepository {
     @Autowired
     @Qualifier("inventoryDynamoDB")
-    private DynamoDBMapper client;
+    private DynamoDbEnhancedClient client;
 
     @Autowired
     private Logger logger;
 
-    public List<Inventory> getFromInventory(String type, String region, String brand, Integer value, String status, String code, String order_number) {
-        DynamoDBQueryExpression<Inventory> expression = new DynamoDBQueryExpression<Inventory>()
-                .withKeyConditionExpression(buildKeyConditionExpression(type, region, brand, value, status, code))
-                .withFilterExpression(buildFilterExpression(order_number))
-                .withExpressionAttributeValues(
-                        Map.of(
-                                RepositoryConstants.TYPE_KEY_EXPRESSION, new AttributeValue().withS(type),
-                                RepositoryConstants.REGION_KEY_EXPRESSION, new AttributeValue().withS(region),
-                                RepositoryConstants.BRAND_KEY_EXPRESSION, new AttributeValue().withS(brand),
-                                RepositoryConstants.VALUE_KEY_EXPRESSION, new AttributeValue().withN(String.valueOf(value)),
-                                RepositoryConstants.STATUS_KEY_EXPRESSION, new AttributeValue().withS(status),
-                                RepositoryConstants.CODE_KEY_EXPRESSION, new AttributeValue().withS(code),
-                                RepositoryConstants.ORDER_NUMBER_ATTRIBUTE_EXPRESSION, new AttributeValue().withS(order_number)
-                        )
-                );
-        logger.info(String.valueOf(expression));
+    public PageIterable<Inventory> getFromInventory(String type, String region, String brand, Integer value, String status, String code, String order_number) {
+        DynamoDbTable<Inventory> clientTable = client.table("inventory", INVENTORY_TABLE_SCHEMA);
+        Key keyFrom = Key.builder()
+                .partitionValue(type)
+                .sortValue(Inventory.createStartInfoValue(region, brand, value, status, code))
+                .build();
+        Key keyTo =  Key.builder()
+                .partitionValue(type)
+                .sortValue(Inventory.createEndInfoValue(region, brand, value, status, code))
+                .build();
+        QueryConditional queryCondition = QueryConditional.sortBetween(keyFrom, keyTo);
+
+        String filterExpression = "#order_number = :order_number";
+        Map<String, String> expressionNamesMap = Map.of("#order_number", "order_number");
+        Map<String, AttributeValue> expressionValuesMap = Map.of(":order_number", AttributeValue.builder().s(order_number).build());
+        Expression expression = Expression.builder()
+                .expression(filterExpression)
+                .expressionNames(expressionNamesMap)
+                .expressionValues(expressionValuesMap)
+                .build();
+
+        QueryEnhancedRequest queryEnhancedRequest = QueryEnhancedRequest.builder()
+                .queryConditional(queryCondition)
+                .filterExpression(order_number != null ? expression : null)
+                .build();
+
+        logger.info(String.valueOf(queryEnhancedRequest));
         try {
-            return client.query(Inventory.class, expression);
-        } catch (AmazonClientException e) {
+            return clientTable.query(queryEnhancedRequest);
+        } catch (Exception e) {
             logger.error(RepositoryConstants.INVENTORY_GET_ALL_FAIL_MESSAGE);
-            throw new RuntimeException();
+            throw e;
         }
     }
 
@@ -64,37 +77,5 @@ public class InventoryRepository {
 //                        )
 //            }
 //        }
-    }
-
-    // combination sort key: china:Apple:100:unused
-    private String buildKeyConditionExpression(String type, String region, String brand, Integer value,  String status, String code) {
-        List<String> expression = new ArrayList<>();
-        if (type != null) {
-            expression.add(RepositoryConstants.TYPE_KEY_EXPRESSION);
-        }
-        if (region != null) {
-            expression.add(RepositoryConstants.REGION_KEY_EXPRESSION);
-        }
-        if (brand != null) {
-            expression.add(RepositoryConstants.BRAND_KEY_EXPRESSION);
-        }
-        if (value != null) {
-            expression.add(RepositoryConstants.VALUE_KEY_EXPRESSION);
-        }
-        if (status != null) {
-            expression.add(RepositoryConstants.STATUS_KEY_EXPRESSION);
-        }
-        if (code != null) {
-            expression.add(RepositoryConstants.CODE_KEY_EXPRESSION);
-        }
-        return String.join(RepositoryConstants.DELIMINATOR, expression);
-    }
-
-    private String buildFilterExpression(String order_number) {
-        List<String> expression = new ArrayList<>();
-        if (order_number != null) {
-           expression.add(RepositoryConstants.ORDER_NUMBER_ATTRIBUTE_EXPRESSION);
-        }
-        return String.join(RepositoryConstants.DELIMINATOR, expression);
     }
 }

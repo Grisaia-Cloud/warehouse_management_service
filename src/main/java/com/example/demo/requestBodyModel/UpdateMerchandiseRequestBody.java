@@ -1,7 +1,9 @@
 package com.example.demo.requestBodyModel;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.springframework.validation.annotation.Validated;
 
+@Validated
 public class UpdateMerchandiseRequestBody {
     @JsonProperty(namespace = "name", required = false)
     private String name;

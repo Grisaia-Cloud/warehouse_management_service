@@ -1,6 +1,5 @@
 package com.example.demo.controller;
 
-import com.amazonaws.services.kms.model.NotFoundException;
 import com.example.demo.constants.ControllerConstants;
 import com.example.demo.constants.RepositoryConstants;
 import com.example.demo.model.Merchandise;
@@ -14,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import software.amazon.awssdk.services.dynamodb.model.ResourceNotFoundException;
 
 @RestController
 @Validated
@@ -30,7 +30,7 @@ public class MerchandiseControllers {
     public ResponseEntity<Object> getMerchandiseBySku(@PathVariable(required = true) String merchandiseSku) {
         try {
             return ResponseEntity.ok(warehouseService.getMerchandiseBySku(merchandiseSku));
-        } catch (NotFoundException e) {
+        } catch (ResourceNotFoundException e) {
             return new ResponseEntity<>(String.format(RepositoryConstants.MERCHANDISE_MISSING_MERCHANDISE, merchandiseSku), HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(ControllerConstants.INTERNAL_SERVER_ERROR_MESSAGE);

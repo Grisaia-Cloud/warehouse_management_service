@@ -22,10 +22,10 @@ public class InventoryControllers {
 
     @GetMapping("/inventory")
     public ResponseEntity<Object> getFromInventory(
-            @RequestParam(value = "type") String type, @RequestParam(value = "region") String region,
-            @RequestParam(value = "brand") String brand, @RequestParam(value = "value") Integer value,
-            @RequestParam(value = "status") String status, @RequestParam(value = "code") String code,
-            @RequestParam(value = "order_number") String order_number) {
+            @RequestParam(value = "type", required = true) String type, @RequestParam(value = "region", required = false) String region,
+            @RequestParam(value = "brand", required = false) String brand, @RequestParam(value = "value", required = false) Integer value,
+            @RequestParam(value = "status", required = false) String status, @RequestParam(value = "code", required = false) String code,
+            @RequestParam(value = "order_number", required = false) String order_number) {
         // TODO: add validation
         try {
             return ResponseEntity.ok(warehouseService.getFromInventory(type, region, brand, value, status, code, order_number));
@@ -34,9 +34,9 @@ public class InventoryControllers {
         }
     }
 
-    @PostMapping("/inventory")
-    public ResponseEntity<Object> addToInventory(@RequestBody(required = true) List<NewInventoryRequestBody> requestBodyList) {
-
-    }
+//    @PostMapping("/inventory")
+//    public ResponseEntity<Object> addToInventory(@RequestBody(required = true) List<NewInventoryRequestBody> requestBodyList) {
+//
+//    }
 
 }

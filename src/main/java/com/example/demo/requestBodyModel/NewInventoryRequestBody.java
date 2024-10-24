@@ -2,8 +2,10 @@ package com.example.demo.requestBodyModel;
 
 import com.example.demo.enumeration.InventoryEnums;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.springframework.validation.annotation.Validated;
 
 // Type | Region | Brand | Value | Status | Code | Order#
+@Validated
 public class NewInventoryRequestBody {
     @JsonProperty(namespace = "type", required = true)
     InventoryEnums.Type type;

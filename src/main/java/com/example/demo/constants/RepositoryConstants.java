@@ -1,23 +1,6 @@
 package com.example.demo.constants;
 
 public class RepositoryConstants {
-    public static final String TYPE_EXPRESSION_ATTRIBUTE_NAME = ":type";
-    public static final String REGION_EXPRESSION_ATTRIBUTE_NAME = ":region";
-    public static final String BRAND_EXPRESSION_ATTRIBUTE_NAME = ":brand";
-    public static final String VALUE_EXPRESSION_ATTRIBUTE_NAME = ":value";
-    public static final String STAUTS_EXPRESSION_ATTRIBUTE_NAME = ":status";
-    public static final String CODE_EXPRESSION_ATTRIBUTE_NAME = ":code";
-    public static final String ORDER_NUMBER_EXPRESSION_ATTRIBUTE_NAME = ":order_number";
-
-    public static final String DELIMINATOR = " AND ";
-    public static final String TYPE_KEY_EXPRESSION = "info.type = :type";
-    public static final String REGION_KEY_EXPRESSION = "info.region = :region";
-    public static final String BRAND_KEY_EXPRESSION = "info.brand = :brand";
-    public static final String VALUE_KEY_EXPRESSION = "info.value = :value";
-    public static final String STATUS_KEY_EXPRESSION = "info.status = :status";
-    public static final String CODE_KEY_EXPRESSION = "info.code = :code";
-    public static final String ORDER_NUMBER_ATTRIBUTE_EXPRESSION = "order_number = :order_number";
-
     public static final String EMPTY_STRING = "";
     public static final String MERCHANDISE_MISSING_MERCHANDISE = "Merchandise with provided SKU %s does not exist";
     public static final String MERCHANDISE_GET_SINGLE_SUCCESSFUL_MESSAGE = "Successfully get merchandise %s from dynamoDB: merchandise";

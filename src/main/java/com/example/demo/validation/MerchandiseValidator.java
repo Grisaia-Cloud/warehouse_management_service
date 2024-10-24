@@ -10,8 +10,6 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Optional;
-
 @Component
 public class MerchandiseValidator {
 
@@ -40,10 +38,7 @@ public class MerchandiseValidator {
 
     public Pair<Boolean,Object> validateUpdateMerchandiseRequestBody(String sku, UpdateMerchandiseRequestBody requestBody) {
         Merchandise merchandise = merchandiseRepository.getMerchandiseInfoBySku(sku);
-        if (merchandise == null) {
-            logger.error(String.format(ValidationConstants.MISSING_MERCHANDISE, sku));
-            return Pair.of(false, String.format(ValidationConstants.MISSING_MERCHANDISE, sku));
-        } else if (requestBody.getDescription() == null && requestBody.getName() == null && requestBody.getCount() == null) {
+        if (requestBody.getDescription() == null && requestBody.getName() == null && requestBody.getCount() == null) {
             logger.error(ValidationConstants.NOTHING_TO_UPDATE_ERROR_MESSAGE);
             return Pair.of(false, ValidationConstants.NOTHING_TO_UPDATE_ERROR_MESSAGE);
         } else if (requestBody.getCount() != null && requestBody.getCount() < 0) {
