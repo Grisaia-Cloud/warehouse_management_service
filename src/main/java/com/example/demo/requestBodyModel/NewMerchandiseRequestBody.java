@@ -5,40 +5,40 @@ import org.springframework.validation.annotation.Validated;
 
 @Validated
 public class NewMerchandiseRequestBody {
-    @JsonProperty(namespace = "sku", required = true)
-    private String sku;
+    @JsonProperty(namespace = "merchandiseSku", required = true)
+    private String merchandiseSku;
 
-    @JsonProperty(namespace = "name", required = true)
-    private String name;
+    @JsonProperty(namespace = "merchandiseName", required = true)
+    private String merchandiseName;
 
-    @JsonProperty(namespace = "count", required = true)
-    private Integer count;
+    @JsonProperty(namespace = "availableMerchandiseCount", required = true)
+    private Integer availableMerchandiseCount;
 
     @JsonProperty(namespace = "description", required = true)
     private String description;
 
-    public String getSku() {
-        return sku;
+    public String getMerchandiseSku() {
+        return merchandiseSku;
     }
 
-    public void setSku(String sku) {
-        this.sku = sku;
+    public void setMerchandiseSku(String merchandiseSku) {
+        this.merchandiseSku = merchandiseSku;
     }
 
-    public String getName() {
-        return name;
+    public String getMerchandiseName() {
+        return merchandiseName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setMerchandiseName(String merchandiseName) {
+        this.merchandiseName = merchandiseName;
     }
 
-    public Integer getCount() {
-        return count;
+    public Integer getAvailableMerchandiseCount() {
+        return availableMerchandiseCount;
     }
 
-    public void setCount(Integer count) {
-        this.count = count;
+    public void setAvailableMerchandiseCount(Integer availableMerchandiseCount) {
+        this.availableMerchandiseCount = availableMerchandiseCount;
     }
 
     public String getDescription() {

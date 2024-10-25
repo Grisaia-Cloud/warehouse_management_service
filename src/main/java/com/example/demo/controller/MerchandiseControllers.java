@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import software.amazon.awssdk.services.dynamodb.model.ConditionalCheckFailedException;
 import software.amazon.awssdk.services.dynamodb.model.ResourceNotFoundException;
 
 @RestController
@@ -45,6 +46,8 @@ public class MerchandiseControllers {
         }
         try {
             return ResponseEntity.ok(warehouseService.insertMerchandise(requestBody));
+        } catch (ConditionalCheckFailedException e) {
+            return ResponseEntity.internalServerError().body(ControllerConstants.DUPLICATE_SKU_ERROR_MESSAGE);
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(ControllerConstants.INTERNAL_SERVER_ERROR_MESSAGE);
         }

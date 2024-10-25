@@ -50,10 +50,10 @@ public class MerchandiseRepository {
                 ).build();
         try {
             client.table("merchandise", MERCHANDISE_TABLE_SCHEMA).putItem(putItemEnhancedRequest);
-            logger.info(String.format(RepositoryConstants.MERCHANDISE_CREATE_SUCCESSFUL_MESSAGE,requestBody.getSku()));
+            logger.info(String.format(RepositoryConstants.MERCHANDISE_CREATE_SUCCESSFUL_MESSAGE,requestBody.getMerchandiseSku()));
             return record;
         } catch (Exception e){
-            logger.error(String.format(RepositoryConstants.MERCHANDISE_CREATE_FAIL_MESSAGE,requestBody.toString()));
+            logger.error(String.format(RepositoryConstants.MERCHANDISE_CREATE_FAIL_MESSAGE, e.toString()));
             throw e;
         }
     }

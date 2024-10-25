@@ -5,16 +5,18 @@ import com.example.demo.requestBodyModel.NewInventoryRequestBody;
 import com.example.demo.service.IWarehouseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
-@RequestMapping("/api/warehouse")
 // Partition key: Giftcard
 // combination sort key: china:Unused:Apple:100:
 
 // Type | Region | Brand | Value | Status | Code | Order#
+@RestController
+@RequestMapping("/api/warehouse")
+@Validated
 public class InventoryControllers {
 
     @Autowired

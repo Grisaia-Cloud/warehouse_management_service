@@ -20,9 +20,9 @@ public class Merchandise {
     public Merchandise() {}
 
     public Merchandise(NewMerchandiseRequestBody requestBody) {
-        this.merchandiseSku = requestBody.getSku();
-        this.merchandiseName = requestBody.getName();
-        this.availableMerchandiseCount = requestBody.getCount();
+        this.merchandiseSku = requestBody.getMerchandiseSku();
+        this.merchandiseName = requestBody.getMerchandiseName();
+        this.availableMerchandiseCount = requestBody.getAvailableMerchandiseCount();
         this.description = requestBody.getDescription();
     }
 

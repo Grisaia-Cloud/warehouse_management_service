@@ -20,16 +20,13 @@ public class MerchandiseValidator {
     MerchandiseRepository merchandiseRepository;
 
     public Pair<Boolean,String> validateNewMerchandiseRequestBody(NewMerchandiseRequestBody requestBody) {
-        if (requestBody.getSku() == null || requestBody.getSku().isEmpty()) {
+        if (requestBody.getMerchandiseSku() == null || requestBody.getMerchandiseSku().isEmpty()) {
             logger.error(ValidationConstants.INVALID_SKU_ERROR_MESSAGE);
             return Pair.of(false, ValidationConstants.INVALID_SKU_ERROR_MESSAGE);
-        } else if (merchandiseRepository.getMerchandiseInfoBySku(requestBody.getSku()) != null) {
-            logger.error(ValidationConstants.DUPLICATE_SKU_ERROR_MESSAGE);
-            return Pair.of(false, ValidationConstants.DUPLICATE_SKU_ERROR_MESSAGE);
-        } else if (requestBody.getName() == null || requestBody.getName().isEmpty()) {
+        } else if (requestBody.getMerchandiseName() == null || requestBody.getMerchandiseName().isEmpty()) {
             logger.error(ValidationConstants.INVALID_NAME_ERROR_MESSAGE);
             return Pair.of(false, ValidationConstants.INVALID_NAME_ERROR_MESSAGE);
-        } else if (requestBody.getCount() == null || requestBody.getCount() < 0) {
+        } else if (requestBody.getAvailableMerchandiseCount() == null || requestBody.getAvailableMerchandiseCount() < 0) {
             logger.error(ValidationConstants.INVALID_COUNT_ERROR_MESSAGE);
             return Pair.of(false, ValidationConstants.INVALID_COUNT_ERROR_MESSAGE);
         }
