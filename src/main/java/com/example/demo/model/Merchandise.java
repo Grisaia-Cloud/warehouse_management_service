@@ -9,55 +9,56 @@ import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbParti
 @DynamoDbBean
 public class Merchandise {
 
-    String sku;
+    String merchandiseSku;
 
-    String name;
+    String merchandiseName;
 
-    Integer count;
+    Integer availableMerchandiseCount;
 
     String description;
 
     public Merchandise() {}
 
     public Merchandise(NewMerchandiseRequestBody requestBody) {
-        this.sku = requestBody.getSku();
-        this.name = requestBody.getName();
-        this.count = requestBody.getCount();
+        this.merchandiseSku = requestBody.getSku();
+        this.merchandiseName = requestBody.getName();
+        this.availableMerchandiseCount = requestBody.getCount();
         this.description = requestBody.getDescription();
     }
 
-    public Merchandise(String sku, UpdateMerchandiseRequestBody requestBody, Merchandise currentMerchandise) {
-        this.sku = currentMerchandise.getSku();
-        this.name = requestBody.getName() != null ? requestBody.getName() : currentMerchandise.getName();
-        this.count = requestBody.getCount() != null ? requestBody.getCount() : currentMerchandise.getCount();
+    public Merchandise(String merchandiseSku, UpdateMerchandiseRequestBody requestBody, Merchandise currentMerchandise) {
+        this.merchandiseSku = currentMerchandise.getMerchandiseSku();
+        this.merchandiseName = requestBody.getMerchandiseName() != null ? requestBody.getMerchandiseName() : currentMerchandise.getMerchandiseName();
+        this.availableMerchandiseCount = requestBody.getAvailableMerchandiseCount() != null ? requestBody.getAvailableMerchandiseCount() : currentMerchandise.getAvailableMerchandiseCount();
         this.description = requestBody.getDescription() != null ? requestBody.getDescription() : currentMerchandise.getDescription();
     }
 
     @DynamoDbPartitionKey
-    public String getSku() {
-        return sku;
+    @DynamoDbAttribute("sku")
+    public String getMerchandiseSku() {
+        return merchandiseSku;
     }
 
-    public void setSku(String sku) {
-        this.sku = sku;
+    public void setMerchandiseSku(String merchandiseSku) {
+        this.merchandiseSku = merchandiseSku;
     }
 
     @DynamoDbAttribute("name")
-    public String getName() {
-        return name;
+    public String getMerchandiseName() {
+        return merchandiseName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setMerchandiseName(String merchandiseName) {
+        this.merchandiseName = merchandiseName;
     }
 
     @DynamoDbAttribute("count")
-    public Integer getCount() {
-        return count;
+    public Integer getAvailableMerchandiseCount() {
+        return availableMerchandiseCount;
     }
 
-    public void setCount(Integer count) {
-        this.count = count;
+    public void setAvailableMerchandiseCount(Integer availableMerchandiseCount) {
+        this.availableMerchandiseCount = availableMerchandiseCount;
     }
 
     @DynamoDbAttribute("description")

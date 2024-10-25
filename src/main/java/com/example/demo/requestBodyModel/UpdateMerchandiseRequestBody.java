@@ -5,29 +5,29 @@ import org.springframework.validation.annotation.Validated;
 
 @Validated
 public class UpdateMerchandiseRequestBody {
-    @JsonProperty(namespace = "name", required = false)
-    private String name;
+    @JsonProperty(namespace = "merchandiseName", required = false)
+    private String merchandiseName;
 
-    @JsonProperty(namespace = "count", required = false)
-    private Integer count;
+    @JsonProperty(namespace = "availableMerchandiseCount", required = false)
+    private Integer availableMerchandiseCount;
 
     @JsonProperty(namespace = "description", required = false)
     private String description;
 
-    public String getName() {
-        return name;
+    public String getMerchandiseName() {
+        return merchandiseName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setMerchandiseName(String merchandiseName) {
+        this.merchandiseName = merchandiseName;
     }
 
-    public Integer getCount() {
-        return count;
+    public Integer getAvailableMerchandiseCount() {
+        return availableMerchandiseCount;
     }
 
-    public void setCount(Integer count) {
-        this.count = count;
+    public void setAvailableMerchandiseCount(Integer availableMerchandiseCount) {
+        this.availableMerchandiseCount = availableMerchandiseCount;
     }
 
     public String getDescription() {

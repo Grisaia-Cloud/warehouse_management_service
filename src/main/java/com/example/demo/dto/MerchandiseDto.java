@@ -13,9 +13,9 @@ public class MerchandiseDto {
     public MerchandiseDto(){}
 
     public MerchandiseDto(Merchandise merchandise) {
-        this.merchandiseSku = merchandise.getSku();
-        this.merchandiseName = merchandise.getName();
-        this.availableMerchandiseCount = merchandise.getCount();
+        this.merchandiseSku = merchandise.getMerchandiseSku();
+        this.merchandiseName = merchandise.getMerchandiseName();
+        this.availableMerchandiseCount = merchandise.getAvailableMerchandiseCount();
         this.description = merchandise.getDescription();
     }
 

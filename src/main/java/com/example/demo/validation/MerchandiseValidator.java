@@ -38,10 +38,10 @@ public class MerchandiseValidator {
 
     public Pair<Boolean,Object> validateUpdateMerchandiseRequestBody(String sku, UpdateMerchandiseRequestBody requestBody) {
         Merchandise merchandise = merchandiseRepository.getMerchandiseInfoBySku(sku);
-        if (requestBody.getDescription() == null && requestBody.getName() == null && requestBody.getCount() == null) {
+        if (requestBody.getDescription() == null && requestBody.getMerchandiseName() == null && requestBody.getAvailableMerchandiseCount() == null) {
             logger.error(ValidationConstants.NOTHING_TO_UPDATE_ERROR_MESSAGE);
             return Pair.of(false, ValidationConstants.NOTHING_TO_UPDATE_ERROR_MESSAGE);
-        } else if (requestBody.getCount() != null && requestBody.getCount() < 0) {
+        } else if (requestBody.getAvailableMerchandiseCount() != null && requestBody.getAvailableMerchandiseCount() < 0) {
             logger.error(ValidationConstants.INVALID_COUNT_ERROR_MESSAGE);
             return Pair.of(false, ValidationConstants.INVALID_COUNT_ERROR_MESSAGE);
         }

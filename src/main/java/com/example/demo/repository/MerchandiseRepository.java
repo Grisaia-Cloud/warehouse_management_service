@@ -84,7 +84,7 @@ public class MerchandiseRepository {
         Merchandise record = new Merchandise(sku, requestBody, currentMerchandise);
         try {
             client.table("merchandise", MERCHANDISE_TABLE_SCHEMA).updateItem(record);
-            logger.info(String.format(RepositoryConstants.MERCHANDISE_UPDATE_SUCCESSFUL_MESSAGE,sku));
+            logger.info(String.format(RepositoryConstants.MERCHANDISE_UPDATE_SUCCESSFUL_MESSAGE, sku));
             return record;
         } catch (Exception e) {
             logger.error(String.format(RepositoryConstants.MERCHANDISE_UPDATE_FAIL_MESSAGE, sku));

@@ -16,5 +16,6 @@ public interface IWarehouseService {
     void deleteMerchandiseBySku(String merchandiseSku);
     MerchandiseDto updateMerchandiseBySku(String merchandiseSku, UpdateMerchandiseRequestBody requestBody, Merchandise current);
     List<InventoryDto> getFromInventory(String type, String region, String brand, Integer value, String status, String code, String order_number);
+    List<InventoryDto> getAllFromInventory();
     void addToInventory(List<NewInventoryRequestBody> newInventoryRequestBodyList);
 }

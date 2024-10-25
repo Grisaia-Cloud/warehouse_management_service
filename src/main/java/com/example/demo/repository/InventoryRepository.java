@@ -2,6 +2,7 @@ package com.example.demo.repository;
 
 import com.example.demo.constants.RepositoryConstants;
 import com.example.demo.model.Inventory;
+import com.example.demo.model.Merchandise;
 import com.example.demo.requestBodyModel.NewInventoryRequestBody;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,6 +60,17 @@ public class InventoryRepository {
         logger.info(String.valueOf(queryEnhancedRequest));
         try {
             return clientTable.query(queryEnhancedRequest);
+        } catch (Exception e) {
+            logger.error(String.format(RepositoryConstants.INVENTORY_GET_FAIL_MESSAGE, type, region, brand, value.toString(), status, code, order_number));
+            throw e;
+        }
+    }
+
+    public PageIterable<Inventory> getAllFromInventory() {
+        try {
+            PageIterable<Inventory> inventoryPageIterable = client.table("inventory", INVENTORY_TABLE_SCHEMA).scan();
+            logger.info(RepositoryConstants.INVENTORY_GET_ALL_SUCCESSFUL_MESSAGE);
+            return inventoryPageIterable;
         } catch (Exception e) {
             logger.error(RepositoryConstants.INVENTORY_GET_ALL_FAIL_MESSAGE);
             throw e;

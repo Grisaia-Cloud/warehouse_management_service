@@ -20,7 +20,7 @@ public class InventoryControllers {
     @Autowired
     IWarehouseService warehouseService;
 
-    @GetMapping("/inventory")
+    @GetMapping(value = "/inventory", params = "param")
     public ResponseEntity<Object> getFromInventory(
             @RequestParam(value = "type", required = true) String type, @RequestParam(value = "region", required = false) String region,
             @RequestParam(value = "brand", required = false) String brand, @RequestParam(value = "value", required = false) Integer value,
@@ -29,6 +29,15 @@ public class InventoryControllers {
         // TODO: add validation
         try {
             return ResponseEntity.ok(warehouseService.getFromInventory(type, region, brand, value, status, code, order_number));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(ControllerConstants.INTERNAL_SERVER_ERROR_MESSAGE);
+        }
+    }
+
+    @GetMapping(value = "/inventory", params = "!param")
+    public ResponseEntity<Object> getAllFromInventory() {
+        try {
+            return ResponseEntity.ok(warehouseService.getAllFromInventory());
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(ControllerConstants.INTERNAL_SERVER_ERROR_MESSAGE);
         }

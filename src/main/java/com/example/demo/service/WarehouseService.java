@@ -18,7 +18,6 @@ import software.amazon.awssdk.services.dynamodb.model.ResourceNotFoundException;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Service
 public class WarehouseService implements IWarehouseService {
@@ -69,8 +68,7 @@ public class WarehouseService implements IWarehouseService {
     @Override
     public MerchandiseDto updateMerchandiseBySku(String merchandiseSku, UpdateMerchandiseRequestBody requestBody, Merchandise currentMerchandise) {
         Merchandise merchandise = merchandiseRepository.updateMerchandiseBySku(merchandiseSku, requestBody, currentMerchandise);
-        MerchandiseDto res = new MerchandiseDto(merchandise);
-        return res;
+        return new MerchandiseDto(merchandise);
     }
 
     @Override
@@ -79,6 +77,18 @@ public class WarehouseService implements IWarehouseService {
         PageIterable<Inventory> inventoryPageIterable = inventoryRepository.getFromInventory(type, region, brand, value, status, code, order_number);
         for (Page<Inventory> page : inventoryPageIterable) {
             for (Inventory inventory : page.items()) {
+                inventoryDtoArrayList.add(new InventoryDto(inventory));
+            }
+        }
+        return inventoryDtoArrayList;
+    }
+
+    @Override
+    public List<InventoryDto> getAllFromInventory() {
+        List<InventoryDto> inventoryDtoArrayList = new ArrayList<>();
+        PageIterable<Inventory> inventoryList = inventoryRepository.getAllFromInventory();
+        for (Page<Inventory> page : inventoryList) {
+            for (Inventory inventory: page.items()) {
                 inventoryDtoArrayList.add(new InventoryDto(inventory));
             }
         }

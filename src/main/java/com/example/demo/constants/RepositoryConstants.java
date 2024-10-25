@@ -14,6 +14,7 @@ public class RepositoryConstants {
     public static final String MERCHANDISE_DELETE_SUCCESSFUL_MESSAGE = "Successfully deleted merchandise with sku %s from DynamoDB table: 'merchandise'";
     public static final String MERCHANDISE_DELETE_FAIL_MESSAGE = "Exception occurred while attempting to delete merchandise with sku %s from DynamoDB table: 'merchandise'";
 
-    public static final String INVENTORY_GET_ALL_SUCCESSFUL_MESSAGE = "Successfully get all inventory from dynamoDB: inventory";
-    public static final String INVENTORY_GET_ALL_FAIL_MESSAGE = "Exception occurred while attempting to get all inventory from dynamoDB: inventory";
+    public static final String INVENTORY_GET_FAIL_MESSAGE = "Exception occurred while attempting to get from dynamoDB inventory with filter: type %s, region %s, brand %s, value %s, status %s, code %s, order_number %s";
+    public static final String INVENTORY_GET_ALL_SUCCESSFUL_MESSAGE = "Successfully get all inventories from dynamoDB: inventory";
+    public static final String INVENTORY_GET_ALL_FAIL_MESSAGE = "Exception occurred while attempting to get all inventories from dynamoDB: inventory";
 }
