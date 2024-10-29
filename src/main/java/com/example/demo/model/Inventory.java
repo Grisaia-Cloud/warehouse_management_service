@@ -35,11 +35,12 @@ public class Inventory {
     public Inventory(NewInventoryRequestBody requestBody) {
         this.type = requestBody.getType().toString();
         this.region = requestBody.getRegion().toString();
-        this.brand = requestBody.getRegion().toString();
+        this.brand = requestBody.getBrand().toString();
         this.value = requestBody.getValue();
         this.status = requestBody.getStatus().toString();
         this.code = requestBody.getCode();
         this.order_number = requestBody.getOrder_number();
+        this.info = createGeneralInfoValue(this.region, this.brand, this.value.toString(), this.status, this.code);
     }
 
     @DynamoDbPartitionKey
@@ -106,6 +107,10 @@ public class Inventory {
 
     public void setOrder_number(String order_number) {
         this.order_number = order_number;
+    }
+
+    public static String createGeneralInfoValue(String... info) {
+        return String.join("#", info);
     }
 
     public static String createStartInfoValue(String region, String brand, Integer value, String status, String code) {

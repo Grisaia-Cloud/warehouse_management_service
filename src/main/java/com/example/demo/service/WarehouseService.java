@@ -44,8 +44,7 @@ public class WarehouseService implements IWarehouseService {
     @Override
     public MerchandiseDto insertMerchandise(NewMerchandiseRequestBody requestBody) {
         Merchandise merchandise = merchandiseRepository.createNewMerchandise(requestBody);
-        MerchandiseDto res = new MerchandiseDto(merchandise);
-        return res;
+        return new MerchandiseDto(merchandise);
     }
 
     @Override
@@ -97,6 +96,10 @@ public class WarehouseService implements IWarehouseService {
 
     @Override
     public void addToInventory(List<NewInventoryRequestBody> newInventoryRequestBodyList) {
-
+        List<Inventory> inventoryList = new ArrayList<>();
+        for (NewInventoryRequestBody requestBody : newInventoryRequestBodyList) {
+            inventoryList.add(new Inventory(requestBody));
+        }
+        inventoryRepository.addToInventory(inventoryList);
     }
 }

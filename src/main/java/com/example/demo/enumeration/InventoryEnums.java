@@ -6,7 +6,8 @@ public class InventoryEnums {
     }
 
     public enum Region {
-        CHINA
+        CHINA,
+        US
     }
 
     public enum Brand {

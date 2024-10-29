@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import software.amazon.awssdk.services.dynamodb.model.TransactionCanceledException;
 
 import java.util.List;
 
@@ -22,7 +23,7 @@ public class InventoryControllers {
     @Autowired
     IWarehouseService warehouseService;
 
-    @GetMapping(value = "/inventory", params = "param")
+    @GetMapping(value = "/inventory", params = {})
     public ResponseEntity<Object> getFromInventory(
             @RequestParam(value = "type", required = true) String type, @RequestParam(value = "region", required = false) String region,
             @RequestParam(value = "brand", required = false) String brand, @RequestParam(value = "value", required = false) Integer value,
@@ -36,7 +37,7 @@ public class InventoryControllers {
         }
     }
 
-    @GetMapping(value = "/inventory", params = "!param")
+    @GetMapping(value = "/inventory", params = {})
     public ResponseEntity<Object> getAllFromInventory() {
         try {
             return ResponseEntity.ok(warehouseService.getAllFromInventory());
@@ -45,9 +46,17 @@ public class InventoryControllers {
         }
     }
 
-//    @PostMapping("/inventory")
-//    public ResponseEntity<Object> addToInventory(@RequestBody(required = true) List<NewInventoryRequestBody> requestBodyList) {
-//
-//    }
-
+    @PostMapping("/inventory")
+    public ResponseEntity<Object> addToInventory(@RequestBody(required = true) List<NewInventoryRequestBody> requestBodyList) {
+        // TODO: validation
+        try {
+            warehouseService.addToInventory(requestBodyList);
+            return ResponseEntity.ok().build();
+        } catch (TransactionCanceledException e) {
+            return ResponseEntity.badRequest().body(e.cancellationReasons());
+        }
+        catch (Exception e) {
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
+    }
 }

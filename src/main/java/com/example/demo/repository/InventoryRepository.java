@@ -2,20 +2,13 @@ package com.example.demo.repository;
 
 import com.example.demo.constants.RepositoryConstants;
 import com.example.demo.model.Inventory;
-import com.example.demo.model.Merchandise;
-import com.example.demo.requestBodyModel.NewInventoryRequestBody;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
-import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
-import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable;
-import software.amazon.awssdk.enhanced.dynamodb.Expression;
-import software.amazon.awssdk.enhanced.dynamodb.Key;
-import software.amazon.awssdk.enhanced.dynamodb.model.PageIterable;
-import software.amazon.awssdk.enhanced.dynamodb.model.QueryConditional;
-import software.amazon.awssdk.enhanced.dynamodb.model.QueryEnhancedRequest;
-import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
+import software.amazon.awssdk.enhanced.dynamodb.*;
+import software.amazon.awssdk.enhanced.dynamodb.model.*;
+import software.amazon.awssdk.services.dynamodb.model.*;
 
 import java.util.List;
 import java.util.Map;
@@ -77,17 +70,35 @@ public class InventoryRepository {
         }
     }
 
-    public void addToInventory(List<NewInventoryRequestBody> items) {
-//        try {
-//            List<WriteRequest> writeRequests = new ArrayList<>();
-//            for (NewInventoryRequestBody item: items) {
-//                Inventory model = new Inventory(item);
-//                WriteRequest writeRequest = new WriteRequest()
-//                        .withPutRequest(new PutRequest()
-//
-//
-//                        )
-//            }
-//        }
+    public void addToInventory(List<Inventory> items) {
+        DynamoDbTable<Inventory> clientTable = client.table("inventory", INVENTORY_TABLE_SCHEMA);
+
+        TransactWriteItemsEnhancedRequest.Builder transactionWriteItemsEnhancedRequestBuilder = TransactWriteItemsEnhancedRequest.builder();
+        for (Inventory item : items) {
+            transactionWriteItemsEnhancedRequestBuilder.addPutItem(
+                    clientTable,
+                    TransactPutItemEnhancedRequest.builder(Inventory.class)
+                            .item(item)
+                            .conditionExpression(
+                                Expression.builder()
+                                    .expression("attribute_not_exists(#type) AND attribute_not_exists(#info)")
+                                    .expressionNames(Map.of("#type", "type", "#info", "info"))
+                                    .build()
+                            ).build()
+            );
+        }
+        TransactWriteItemsEnhancedRequest b = transactionWriteItemsEnhancedRequestBuilder.build();
+
+
+        try {
+            client.transactWriteItems(b);
+        } catch (TransactionCanceledException e) {
+            logger.error(e.cancellationReasons().toString());
+            throw e;
+        }
+        catch (Exception e) {
+            logger.error(e.getMessage());
+            throw e;
+        }
     }
 }
