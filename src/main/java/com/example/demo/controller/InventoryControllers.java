@@ -63,7 +63,7 @@ public class InventoryControllers {
             warehouseService.addToInventory(requestBodyList);
             return ResponseEntity.ok().build();
         } catch (TransactionCanceledException e) {
-            return ResponseEntity.badRequest().body("Item already exist or duplicate item in request body");
+            return ResponseEntity.badRequest().body(ControllerConstants.DUPLICATE_INVENTORY_ITEM_ERROR_MESSAGE);
         }
         catch (Exception e) {
             return ResponseEntity.internalServerError().body(e.toString());
