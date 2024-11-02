@@ -34,7 +34,7 @@ public class MerchandiseControllers {
         } catch (ResourceNotFoundException e) {
             return new ResponseEntity<>(String.format(RepositoryConstants.MERCHANDISE_MISSING_MERCHANDISE, merchandiseSku), HttpStatus.NOT_FOUND);
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().body(ControllerConstants.INTERNAL_SERVER_ERROR_MESSAGE);
+            return ResponseEntity.internalServerError().body(e.getMessage());
         }
     }
 
@@ -49,7 +49,7 @@ public class MerchandiseControllers {
         } catch (ConditionalCheckFailedException e) {
             return ResponseEntity.internalServerError().body(ControllerConstants.DUPLICATE_SKU_ERROR_MESSAGE);
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().body(ControllerConstants.INTERNAL_SERVER_ERROR_MESSAGE);
+            return ResponseEntity.internalServerError().body(e.getMessage());
         }
     }
 
@@ -58,7 +58,7 @@ public class MerchandiseControllers {
         try {
             return ResponseEntity.ok(warehouseService.getAllMerchandise());
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().body(ControllerConstants.INTERNAL_SERVER_ERROR_MESSAGE);
+            return ResponseEntity.internalServerError().body(e.getMessage());
         }
     }
 
@@ -68,7 +68,7 @@ public class MerchandiseControllers {
             warehouseService.deleteMerchandiseBySku(merchandiseSku);
             return ResponseEntity.ok().build();
         } catch (Exception e){
-            return ResponseEntity.internalServerError().body(ControllerConstants.INTERNAL_SERVER_ERROR_MESSAGE);
+            return ResponseEntity.internalServerError().body(e.getMessage());
         }
     }
 
@@ -81,7 +81,7 @@ public class MerchandiseControllers {
         try {
             return ResponseEntity.ok(warehouseService.updateMerchandiseBySku(merchandiseSku, requestBody, (Merchandise) validationResult.getRight()));
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().body(ControllerConstants.INTERNAL_SERVER_ERROR_MESSAGE);
+            return ResponseEntity.internalServerError().body(e.getMessage());
         }
     }
 }

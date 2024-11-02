@@ -3,7 +3,9 @@ package com.example.demo.controller;
 import com.example.demo.constants.ControllerConstants;
 import com.example.demo.requestBodyModel.NewInventoryRequestBody;
 import com.example.demo.service.IWarehouseService;
+import com.example.demo.validation.InventoryValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.util.Pair;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -23,40 +25,48 @@ public class InventoryControllers {
     @Autowired
     IWarehouseService warehouseService;
 
-    @GetMapping(value = "/inventory", params = {})
+    @Autowired
+    InventoryValidator inventoryValidator;
+
+    @GetMapping(value = "/inventory")
     public ResponseEntity<Object> getFromInventory(
-            @RequestParam(value = "type", required = true) String type, @RequestParam(value = "region", required = false) String region,
+            @RequestParam(value = "type", required = false) String type, @RequestParam(value = "region", required = false) String region,
             @RequestParam(value = "brand", required = false) String brand, @RequestParam(value = "value", required = false) Integer value,
             @RequestParam(value = "status", required = false) String status, @RequestParam(value = "code", required = false) String code,
             @RequestParam(value = "order_number", required = false) String order_number) {
-        // TODO: add validation
-        try {
-            return ResponseEntity.ok(warehouseService.getFromInventory(type, region, brand, value, status, code, order_number));
-        } catch (Exception e) {
-            return ResponseEntity.internalServerError().body(ControllerConstants.INTERNAL_SERVER_ERROR_MESSAGE);
+        Pair<Boolean, String> validation_result = inventoryValidator.validateGetRequestParams(type, region, brand, value, status, code, order_number);
+        if (!validation_result.getFirst()) {
+            return ResponseEntity.badRequest().body(validation_result.getSecond());
         }
-    }
-
-    @GetMapping(value = "/inventory", params = {})
-    public ResponseEntity<Object> getAllFromInventory() {
-        try {
-            return ResponseEntity.ok(warehouseService.getAllFromInventory());
-        } catch (Exception e) {
-            return ResponseEntity.internalServerError().body(ControllerConstants.INTERNAL_SERVER_ERROR_MESSAGE);
+        if (type == null) {
+            try {
+                return ResponseEntity.ok(warehouseService.getAllFromInventory());
+            } catch (Exception e) {
+                return ResponseEntity.internalServerError().body(e.getMessage());
+            }
+        } else {
+            try {
+                return ResponseEntity.ok(warehouseService.getFromInventory(type, region, brand, value, status, code, order_number));
+            } catch (Exception e) {
+                return ResponseEntity.internalServerError().body(e.getMessage());
+            }
         }
     }
 
     @PostMapping("/inventory")
     public ResponseEntity<Object> addToInventory(@RequestBody(required = true) List<NewInventoryRequestBody> requestBodyList) {
-        // TODO: validation
+        Pair<Boolean, String> validation_result = inventoryValidator.validatePostRequestParams(requestBodyList);
+        if (!validation_result.getFirst()) {
+            return ResponseEntity.badRequest().body(validation_result.getSecond());
+        }
         try {
             warehouseService.addToInventory(requestBodyList);
             return ResponseEntity.ok().build();
         } catch (TransactionCanceledException e) {
-            return ResponseEntity.badRequest().body(e.cancellationReasons());
+            return ResponseEntity.badRequest().body("Item already exist or duplicate item in request body");
         }
         catch (Exception e) {
-            return ResponseEntity.internalServerError().body(e.getMessage());
+            return ResponseEntity.internalServerError().body(e.toString());
         }
     }
 }

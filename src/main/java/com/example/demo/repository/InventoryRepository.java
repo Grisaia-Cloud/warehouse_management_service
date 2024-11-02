@@ -30,7 +30,7 @@ public class InventoryRepository {
                 .partitionValue(type)
                 .sortValue(Inventory.createStartInfoValue(region, brand, value, status, code))
                 .build();
-        Key keyTo =  Key.builder()
+        Key keyTo = Key.builder()
                 .partitionValue(type)
                 .sortValue(Inventory.createEndInfoValue(region, brand, value, status, code))
                 .build();
