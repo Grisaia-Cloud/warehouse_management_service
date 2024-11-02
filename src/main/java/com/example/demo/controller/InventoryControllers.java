@@ -1,6 +1,8 @@
 package com.example.demo.controller;
 
 import com.example.demo.constants.ControllerConstants;
+import com.example.demo.enumeration.InventoryEnums;
+import com.example.demo.model.Inventory;
 import com.example.demo.requestBodyModel.NewInventoryRequestBody;
 import com.example.demo.service.IWarehouseService;
 import com.example.demo.validation.InventoryValidator;
@@ -53,6 +55,27 @@ public class InventoryControllers {
         }
     }
 
+    @GetMapping("/inventory/types")
+    public ResponseEntity<Object> getInventoryTypes() {
+        return ResponseEntity.ok().body(InventoryEnums.Type.values());
+    }
+
+    @GetMapping(value = {"/inventory/type/{type}/regions", "/inventory/regions"})
+    public ResponseEntity<Object> getInventoryRegions() {
+        return ResponseEntity.ok().body(InventoryEnums.Region.values());
+    }
+
+    @GetMapping(value = {"/inventory/type/{type}/region/{region}/brands", "/inventory/brands"})
+    public ResponseEntity<Object> getInventoryBrands() {
+        return ResponseEntity.ok().body(InventoryEnums.Brand.values());
+    }
+
+    @GetMapping(value = {"/inventory/type/{type}/region/{region}/brand/{brand}/statuses", "/inventory/statuses"})
+    public ResponseEntity<Object> getInventoryStatuses() {
+        return ResponseEntity.ok().body(InventoryEnums.Status.values());
+    }
+
+
     @PostMapping("/inventory")
     public ResponseEntity<Object> addToInventory(@RequestBody(required = true) List<NewInventoryRequestBody> requestBodyList) {
         Pair<Boolean, String> validation_result = inventoryValidator.validatePostRequestParams(requestBodyList);
@@ -69,4 +92,6 @@ public class InventoryControllers {
             return ResponseEntity.internalServerError().body(e.toString());
         }
     }
+
+//    @DeleteMapping("/inventory/type/{type}/region/{region}/brand/{brand}/")
 }
