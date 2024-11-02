@@ -6,6 +6,7 @@ import com.example.demo.model.Inventory;
 import com.example.demo.model.Merchandise;
 import com.example.demo.repository.InventoryRepository;
 import com.example.demo.repository.MerchandiseRepository;
+import com.example.demo.requestBodyModel.GetInventoryRequestBody;
 import com.example.demo.requestBodyModel.NewInventoryRequestBody;
 import com.example.demo.requestBodyModel.NewMerchandiseRequestBody;
 import com.example.demo.requestBodyModel.UpdateMerchandiseRequestBody;
@@ -71,12 +72,15 @@ public class WarehouseService implements IWarehouseService {
     }
 
     @Override
-    public List<InventoryDto> getFromInventory(String type, String region, String brand, Integer value, String status, String code, String order_number) {
+    public List<InventoryDto> getFromInventory(String type, String region, String brand, Integer value, String status, String code, String order_number, Integer count) {
         List<InventoryDto> inventoryDtoArrayList = new ArrayList<>();
-        PageIterable<Inventory> inventoryPageIterable = inventoryRepository.getFromInventory(type, region, brand, value, status, code, order_number);
+        PageIterable<Inventory> inventoryPageIterable = inventoryRepository.getFromInventory(type, region, brand, value, status, code, order_number, count);
         for (Page<Inventory> page : inventoryPageIterable) {
             for (Inventory inventory : page.items()) {
                 inventoryDtoArrayList.add(new InventoryDto(inventory));
+            }
+            if (count != null) {
+                break;
             }
         }
         return inventoryDtoArrayList;

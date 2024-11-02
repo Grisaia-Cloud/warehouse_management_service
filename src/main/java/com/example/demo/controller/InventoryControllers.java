@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.constants.ControllerConstants;
 import com.example.demo.enumeration.InventoryEnums;
 import com.example.demo.model.Inventory;
+import com.example.demo.requestBodyModel.GetInventoryRequestBody;
 import com.example.demo.requestBodyModel.NewInventoryRequestBody;
 import com.example.demo.service.IWarehouseService;
 import com.example.demo.validation.InventoryValidator;
@@ -35,8 +36,8 @@ public class InventoryControllers {
             @RequestParam(value = "type", required = false) String type, @RequestParam(value = "region", required = false) String region,
             @RequestParam(value = "brand", required = false) String brand, @RequestParam(value = "value", required = false) Integer value,
             @RequestParam(value = "status", required = false) String status, @RequestParam(value = "code", required = false) String code,
-            @RequestParam(value = "order_number", required = false) String order_number) {
-        Pair<Boolean, String> validation_result = inventoryValidator.validateGetRequestParams(type, region, brand, value, status, code, order_number);
+            @RequestParam(value = "order_number", required = false) String order_number, @RequestBody(required = false) GetInventoryRequestBody requestBody) {
+        Pair<Boolean, String> validation_result = inventoryValidator.validateGetRequestParams(type, region, brand, value, status, code, order_number, requestBody);
         if (!validation_result.getFirst()) {
             return ResponseEntity.badRequest().body(validation_result.getSecond());
         }
@@ -48,7 +49,7 @@ public class InventoryControllers {
             }
         } else {
             try {
-                return ResponseEntity.ok(warehouseService.getFromInventory(type, region, brand, value, status, code, order_number));
+                return ResponseEntity.ok(warehouseService.getFromInventory(type, region, brand, value, status, code, order_number, requestBody != null ? requestBody.getCount() : null));
             } catch (Exception e) {
                 return ResponseEntity.internalServerError().body(e.getMessage());
             }

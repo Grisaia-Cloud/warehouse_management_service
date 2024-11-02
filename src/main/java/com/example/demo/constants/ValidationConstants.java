@@ -12,4 +12,5 @@ public class ValidationConstants {
     public static final String ILLEGAL_BRAND_ERROR_MESSAGE = "Provided param: 'brand' is not valid";
     public static final String ILLEGAL_VALUE_ERROR_MESSAGE = "Provided param: 'value' has to be greater than zero";
     public static final String ILLEGAL_STATUS_ERROR_MESSAGE = "Provided param: 'status' is not valid";
+    public static final String ILLEGAL_COUNT_ERROR_MESSAGE = "Request Body field: 'count' has to be greater than zero";
 }

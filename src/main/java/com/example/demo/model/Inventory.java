@@ -147,7 +147,7 @@ public class Inventory {
                 .map(Enum::name)
                 .max(String::compareTo)
                 .orElse(null);
-        String defaultValue = "0";
+        String defaultValue = "10000";
         String defaultStatus = Arrays.stream(InventoryEnums.Status.values())
                 .map(Enum::name)
                 .max(String::compareTo)

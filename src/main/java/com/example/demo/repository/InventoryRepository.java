@@ -2,6 +2,7 @@ package com.example.demo.repository;
 
 import com.example.demo.constants.RepositoryConstants;
 import com.example.demo.model.Inventory;
+import com.example.demo.requestBodyModel.GetInventoryRequestBody;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -24,7 +25,7 @@ public class InventoryRepository {
     @Autowired
     private Logger logger;
 
-    public PageIterable<Inventory> getFromInventory(String type, String region, String brand, Integer value, String status, String code, String order_number) {
+    public PageIterable<Inventory> getFromInventory(String type, String region, String brand, Integer value, String status, String code, String order_number, Integer count) {
         DynamoDbTable<Inventory> clientTable = client.table("inventory", INVENTORY_TABLE_SCHEMA);
         Key keyFrom = Key.builder()
                 .partitionValue(type)
@@ -45,10 +46,13 @@ public class InventoryRepository {
                 .expressionValues(expressionValuesMap)
                 .build();
 
-        QueryEnhancedRequest queryEnhancedRequest = QueryEnhancedRequest.builder()
+        QueryEnhancedRequest.Builder queryEnhancedRequestBuilder = QueryEnhancedRequest.builder()
                 .queryConditional(queryCondition)
-                .filterExpression(order_number != null ? expression : null)
-                .build();
+                .filterExpression(order_number != null ? expression : null);
+        if (count != null) {
+            queryEnhancedRequestBuilder.limit(count);
+        }
+        QueryEnhancedRequest queryEnhancedRequest = queryEnhancedRequestBuilder.build();
 
         logger.info(String.valueOf(queryEnhancedRequest));
         try {
