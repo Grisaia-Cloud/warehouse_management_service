@@ -1,12 +1,14 @@
 package com.example.demo.controller;
 
 import com.example.demo.constants.ControllerConstants;
+import com.example.demo.dto.InventoryDto;
 import com.example.demo.enumeration.InventoryEnums;
-import com.example.demo.model.Inventory;
 import com.example.demo.requestBodyModel.GetInventoryRequestBody;
 import com.example.demo.requestBodyModel.NewInventoryRequestBody;
+import com.example.demo.requestBodyModel.UpdateInventoryRequestBody;
 import com.example.demo.service.IWarehouseService;
 import com.example.demo.validation.InventoryValidator;
+import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.Pair;
 import org.springframework.http.ResponseEntity;
@@ -32,7 +34,7 @@ public class InventoryControllers {
     InventoryValidator inventoryValidator;
 
     @GetMapping(value = "/inventory")
-    public ResponseEntity<Object> getFromInventory(
+    public ResponseEntity<Object> getInventoryItems(
             @RequestParam(value = "type", required = false) String type, @RequestParam(value = "region", required = false) String region,
             @RequestParam(value = "brand", required = false) String brand, @RequestParam(value = "value", required = false) Integer value,
             @RequestParam(value = "status", required = false) String status, @RequestParam(value = "code", required = false) String code,
@@ -43,13 +45,13 @@ public class InventoryControllers {
         }
         if (type == null) {
             try {
-                return ResponseEntity.ok(warehouseService.getAllFromInventory());
+                return ResponseEntity.ok(warehouseService.getAllInventoryItems());
             } catch (Exception e) {
                 return ResponseEntity.internalServerError().body(e.getMessage());
             }
         } else {
             try {
-                return ResponseEntity.ok(warehouseService.getFromInventory(type, region, brand, value, status, code, order_number, requestBody != null ? requestBody.getCount() : null));
+                return ResponseEntity.ok(warehouseService.getInventoryItems(type, region, brand, value, status, code, order_number, requestBody != null ? requestBody.getCount() : null));
             } catch (Exception e) {
                 return ResponseEntity.internalServerError().body(e.getMessage());
             }
@@ -78,13 +80,13 @@ public class InventoryControllers {
 
 
     @PostMapping("/inventory")
-    public ResponseEntity<Object> addToInventory(@RequestBody(required = true) List<NewInventoryRequestBody> requestBodyList) {
+    public ResponseEntity<Object> addInventoryItems(@RequestBody(required = true) List<NewInventoryRequestBody> requestBodyList) {
         Pair<Boolean, String> validation_result = inventoryValidator.validatePostRequestParams(requestBodyList);
         if (!validation_result.getFirst()) {
             return ResponseEntity.badRequest().body(validation_result.getSecond());
         }
         try {
-            warehouseService.addToInventory(requestBodyList);
+            warehouseService.addInventoryItems(requestBodyList);
             return ResponseEntity.ok().build();
         } catch (TransactionCanceledException e) {
             return ResponseEntity.badRequest().body(ControllerConstants.DUPLICATE_INVENTORY_ITEM_ERROR_MESSAGE);
@@ -94,5 +96,18 @@ public class InventoryControllers {
         }
     }
 
-//    @DeleteMapping("/inventory/type/{type}/region/{region}/brand/{brand}/")
+    @PutMapping("/inventory/code/{code}")
+    public ResponseEntity<Object> updateInventoryItems(@RequestBody(required = true) UpdateInventoryRequestBody requestBody, @PathVariable(required = true) String code) {
+        Pair<Boolean, String> validation_result = inventoryValidator.validateUpdateRequestParams(requestBody);
+        if (!validation_result.getFirst()) {
+            return ResponseEntity.badRequest().body(validation_result.getSecond());
+        }
+        try {
+            InventoryDto res = warehouseService.updateInventoryItems(requestBody, code);
+            return ResponseEntity.ok().body(res);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(e.toString());
+        }
+    }
+//    @DeleteMapping("/inventory/type/{type}/{code}/")
 }

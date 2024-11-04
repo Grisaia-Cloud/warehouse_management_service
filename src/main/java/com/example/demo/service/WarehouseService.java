@@ -6,10 +6,7 @@ import com.example.demo.model.Inventory;
 import com.example.demo.model.Merchandise;
 import com.example.demo.repository.InventoryRepository;
 import com.example.demo.repository.MerchandiseRepository;
-import com.example.demo.requestBodyModel.GetInventoryRequestBody;
-import com.example.demo.requestBodyModel.NewInventoryRequestBody;
-import com.example.demo.requestBodyModel.NewMerchandiseRequestBody;
-import com.example.demo.requestBodyModel.UpdateMerchandiseRequestBody;
+import com.example.demo.requestBodyModel.*;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -72,9 +69,9 @@ public class WarehouseService implements IWarehouseService {
     }
 
     @Override
-    public List<InventoryDto> getFromInventory(String type, String region, String brand, Integer value, String status, String code, String order_number, Integer count) {
+    public List<InventoryDto> getInventoryItems(String type, String region, String brand, Integer value, String status, String code, String order_number, Integer count) {
         List<InventoryDto> inventoryDtoArrayList = new ArrayList<>();
-        PageIterable<Inventory> inventoryPageIterable = inventoryRepository.getFromInventory(type, region, brand, value, status, code, order_number, count);
+        PageIterable<Inventory> inventoryPageIterable = inventoryRepository.getInventoryItems(type, region, brand, value, status, code, order_number, count);
         for (Page<Inventory> page : inventoryPageIterable) {
             for (Inventory inventory : page.items()) {
                 inventoryDtoArrayList.add(new InventoryDto(inventory));
@@ -87,9 +84,9 @@ public class WarehouseService implements IWarehouseService {
     }
 
     @Override
-    public List<InventoryDto> getAllFromInventory() {
+    public List<InventoryDto> getAllInventoryItems() {
         List<InventoryDto> inventoryDtoArrayList = new ArrayList<>();
-        PageIterable<Inventory> inventoryList = inventoryRepository.getAllFromInventory();
+        PageIterable<Inventory> inventoryList = inventoryRepository.getAllInventoryItems();
         for (Page<Inventory> page : inventoryList) {
             for (Inventory inventory: page.items()) {
                 inventoryDtoArrayList.add(new InventoryDto(inventory));
@@ -99,11 +96,17 @@ public class WarehouseService implements IWarehouseService {
     }
 
     @Override
-    public void addToInventory(List<NewInventoryRequestBody> newInventoryRequestBodyList) {
+    public void addInventoryItems(List<NewInventoryRequestBody> newInventoryRequestBodyList) {
         List<Inventory> inventoryList = new ArrayList<>();
         for (NewInventoryRequestBody requestBody : newInventoryRequestBodyList) {
             inventoryList.add(new Inventory(requestBody));
         }
-        inventoryRepository.addToInventory(inventoryList);
+        inventoryRepository.addInventoryItems(inventoryList);
+    }
+
+    @Override
+    public InventoryDto updateInventoryItems(UpdateInventoryRequestBody updateInventoryRequest, String code) {
+        Inventory record = inventoryRepository.updateInventoryItem(updateInventoryRequest, code);
+        return new InventoryDto(record);
     }
 }

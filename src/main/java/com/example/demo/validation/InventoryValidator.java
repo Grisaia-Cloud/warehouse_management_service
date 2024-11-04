@@ -5,6 +5,7 @@ import com.example.demo.enumeration.InventoryEnums;
 import com.example.demo.repository.InventoryRepository;
 import com.example.demo.requestBodyModel.GetInventoryRequestBody;
 import com.example.demo.requestBodyModel.NewInventoryRequestBody;
+import com.example.demo.requestBodyModel.UpdateInventoryRequestBody;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.Pair;
@@ -22,15 +23,16 @@ public class InventoryValidator {
     InventoryRepository inventoryRepository;
 
     public Pair<Boolean, String> validateGetRequestParams(String type, String region, String brand, Integer value, String status, String code, String order_number, GetInventoryRequestBody requestBody) {
-        if (type == null && (region != null || brand != null || value != null || status != null || code != null || order_number != null)) {
+        if (type == null && region == null && brand == null && value == null && status == null && code == null && order_number == null) {
+            return Pair.of(true, ValidationConstants.EMPTY_STRING);
+        }
+        if (type == null) {
             return Pair.of(false, ValidationConstants.NULL_TYPE_ERROR_MESSAGE);
         }
-        if (type != null) {
-            try {
-                InventoryEnums.Type.valueOf(type);
-            } catch (IllegalArgumentException e) {
-                return Pair.of(false, ValidationConstants.ILLEGAL_TYPE_ERROR_MESSAGE);
-            }
+        try {
+            InventoryEnums.Type.valueOf(type);
+        } catch (IllegalArgumentException e) {
+            return Pair.of(false, ValidationConstants.ILLEGAL_TYPE_ERROR_MESSAGE);
         }
         if (region != null) {
             try {
@@ -67,6 +69,13 @@ public class InventoryValidator {
             if (requestBody.getValue() <= 0) {
                 return Pair.of(false, ValidationConstants.ILLEGAL_VALUE_ERROR_MESSAGE);
             }
+        }
+        return Pair.of(true, ValidationConstants.EMPTY_STRING);
+    }
+
+    public Pair<Boolean, String> validateUpdateRequestParams(UpdateInventoryRequestBody requestBody) {
+        if (requestBody == null || (requestBody.getOrder_number() == null && requestBody.getStatus() == null)) {
+            return Pair.of(false, "some error");
         }
         return Pair.of(true, ValidationConstants.EMPTY_STRING);
     }

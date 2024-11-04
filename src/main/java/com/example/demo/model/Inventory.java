@@ -2,8 +2,10 @@ package com.example.demo.model;
 
 import com.example.demo.enumeration.InventoryEnums;
 import com.example.demo.requestBodyModel.NewInventoryRequestBody;
+import com.example.demo.requestBodyModel.UpdateInventoryRequestBody;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey;
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbSecondaryPartitionKey;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbSortKey;
 
 import java.util.ArrayList;
@@ -41,6 +43,17 @@ public class Inventory {
         this.code = requestBody.getCode();
         this.order_number = requestBody.getOrder_number();
         this.info = createGeneralInfoValue(this.region, this.brand, this.value.toString(), this.status, this.code);
+    }
+
+    public Inventory(UpdateInventoryRequestBody requestBody, Inventory inventory) {
+        this.type = inventory.getType();
+        this.region = inventory.getRegion();
+        this.brand = inventory.getBrand();
+        this.value = inventory.getValue();
+        this.status = requestBody.getStatus() != null ? requestBody.getStatus().toString() : inventory.getStatus();
+        this.code = inventory.getCode();
+        this.order_number = requestBody.getOrder_number() != null ? requestBody.getOrder_number() : inventory.getOrder_number();
+        this.info = inventory.info;
     }
 
     @DynamoDbPartitionKey
@@ -93,6 +106,7 @@ public class Inventory {
         this.status = status;
     }
 
+    @DynamoDbSecondaryPartitionKey(indexNames = {"code"})
     public String getCode() {
         return code;
     }
